@@ -1,0 +1,19 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": ["undefined-css-classes"],
+  "rules": {
+    "undefined-css-classes/no-undefined-css-classes": ["error", {
+      "cssFiles": ["**/*.css"],
+      "ignoreTailwind": true,
+      "requireTailwindConfig": false,
+      "allowDynamicClasses": true,
+      "baseDir": "."
+    }]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "eslint-plugin-undefined-css-classes",
+  "version": "1.0.0",
+  "description": "ESLint plugin to detect undefined CSS classes in HTML/JSX",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint lib/**/*.js"
+  },
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "css",
+    "classes",
+    "validation",
+    "tailwind"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "eslint": ">=7.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "@eslint/js": "^8.0.0"
+  },
+  "dependencies": {
+    "postcss": "^8.4.31",
+    "postcss-selector-parser": "^6.0.13",
+    "glob": "^10.3.10",
+    "micromatch": "^4.0.5"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
