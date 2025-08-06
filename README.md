@@ -139,6 +139,17 @@ element.classList.add("undefined-class");
 
 ## 🎨 Tailwind CSS Detection
 
+### Implementation Approach
+
+The plugin uses a hybrid approach for detecting Tailwind CSS classes:
+
+1. **Pattern-based detection** (current): Uses comprehensive regex patterns to match Tailwind utilities
+2. **Definition-based detection** (experimental): Uses a structured class definition system similar to tailwind-merge
+
+You can enable the experimental comprehensive check by setting `useComprehensiveCheck: true` in the tailwind-detector options.
+
+## 🎨 Tailwind CSS Support
+
 The plugin automatically detects Tailwind CSS in your project through multiple methods:
 
 ### Tailwind CSS 3 and earlier

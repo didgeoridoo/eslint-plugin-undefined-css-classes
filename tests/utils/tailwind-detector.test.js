@@ -324,20 +324,21 @@ describe('TailwindDetector', () => {
       })).toBe(true);
     });
 
-    test('ignores custom Tailwind color utilities', () => {
+    test('does NOT ignore custom color utilities', () => {
       fs.writeFileSync(path.join(testProjectDir, 'tailwind.config.js'), 'module.exports = {}');
       const detector = new TailwindDetector({ projectRoot: testProjectDir });
       
-      // Custom color utilities that would be defined in @theme
-      expect(detector.shouldIgnoreClass('text-primary', { ignoreTailwind: true })).toBe(true);
-      expect(detector.shouldIgnoreClass('bg-surface', { ignoreTailwind: true })).toBe(true);
-      expect(detector.shouldIgnoreClass('text-surface-tertiary', { ignoreTailwind: true })).toBe(true);
-      expect(detector.shouldIgnoreClass('bg-brand-500', { ignoreTailwind: true })).toBe(true);
-      expect(detector.shouldIgnoreClass('border-inverse', { ignoreTailwind: true })).toBe(true);
-      expect(detector.shouldIgnoreClass('text-inverse', { ignoreTailwind: true })).toBe(true);
+      // Custom color utilities should NOT be automatically accepted
+      // These need to be defined in actual CSS files
+      expect(detector.shouldIgnoreClass('text-primary', { ignoreTailwind: true })).toBe(false);
+      expect(detector.shouldIgnoreClass('bg-surface', { ignoreTailwind: true })).toBe(false);
+      expect(detector.shouldIgnoreClass('text-surface-tertiary', { ignoreTailwind: true })).toBe(false);
+      expect(detector.shouldIgnoreClass('bg-brand-500', { ignoreTailwind: true })).toBe(false);
+      expect(detector.shouldIgnoreClass('border-inverse', { ignoreTailwind: true })).toBe(false);
+      expect(detector.shouldIgnoreClass('text-inverse', { ignoreTailwind: true })).toBe(false);
     });
 
-    test('ignores Tailwind 4 patterns with @theme directive', () => {
+    test('detects Tailwind 4 but still does not ignore custom colors', () => {
       // Simulate Tailwind 4 detection
       fs.writeFileSync(path.join(testProjectDir, 'app.css'), `
         @import "tailwindcss";
@@ -347,8 +348,11 @@ describe('TailwindDetector', () => {
       `);
       const detector = new TailwindDetector({ projectRoot: testProjectDir });
       
-      expect(detector.shouldIgnoreClass('text-primary', { ignoreTailwind: true })).toBe(true);
-      expect(detector.shouldIgnoreClass('bg-primary', { ignoreTailwind: true })).toBe(true);
+      // Custom colors should NOT be ignored even with @theme
+      expect(detector.shouldIgnoreClass('text-primary', { ignoreTailwind: true })).toBe(false);
+      expect(detector.shouldIgnoreClass('bg-primary', { ignoreTailwind: true })).toBe(false);
+      
+      // Standard Tailwind utilities should still be ignored
       expect(detector.shouldIgnoreClass('container', { ignoreTailwind: true })).toBe(true);
       expect(detector.shouldIgnoreClass('text-center', { ignoreTailwind: true })).toBe(true);
     });
