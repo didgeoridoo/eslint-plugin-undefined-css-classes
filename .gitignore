@@ -14,6 +14,20 @@ coverage/
 *.swo
 *~
 .npmrc
-package-lock.json
 yarn.lock
 pnpm-lock.yaml
+
+# Test artifacts
+test-temp/
+*.tmp
+.eslintcache
+
+# OS files
+Thumbs.db
+
+# NPM files
+*.tgz
+
+# Local development
+NPM_PUBLISH_GUIDE.md
+SVELTE-DEBUG.md

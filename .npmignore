@@ -1,0 +1,75 @@
+# Test files
+tests/
+**/*.test.js
+**/*.spec.js
+verify-plugin.js
+
+# Development files
+.eslintrc.js
+.gitignore
+.github/
+.vscode/
+.idea/
+
+# Documentation source files
+docs/
+*.md
+!README.md
+!LICENSE
+
+# CI/CD
+.travis.yml
+.gitlab-ci.yml
+appveyor.yml
+.circleci/
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Editor directories
+.vscode/
+.idea/
+*.sublime-*
+
+# Dependencies
+node_modules/
+
+# Build artifacts
+*.tgz
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+
+# Config files not needed in package
+.editorconfig
+.prettierrc*
+.commitlintrc*
+.huskyrc*
+.lintstagedrc*
+
+# Development scripts
+scripts/dev/
+
+# Examples (if not needed for documentation)
+examples/dev/
+
+# Misc
+.env
+.env.*
+!.env.example

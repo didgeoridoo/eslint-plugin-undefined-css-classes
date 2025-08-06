@@ -7,6 +7,7 @@ An ESLint plugin to detect undefined CSS classes in your HTML and JSX code. Auto
 - [**API Documentation**](./docs/API.md) - Complete API reference and configuration options
 - [**Usage Examples**](./docs/USAGE-EXAMPLES.md) - Examples for React, Vue, Next.js, and more
 - [**Troubleshooting Guide**](./docs/TROUBLESHOOTING.md) - Common issues and solutions
+- [**Performance Guide**](./docs/PERFORMANCE.md) - Optimization tips for large projects
 - [**Test Coverage Report**](./test-summary.md) - Comprehensive test coverage details
 
 ## ✨ Features
@@ -143,10 +144,8 @@ element.classList.add("undefined-class");
 
 The plugin uses a hybrid approach for detecting Tailwind CSS classes:
 
-1. **Pattern-based detection** (current): Uses comprehensive regex patterns to match Tailwind utilities
-2. **Definition-based detection** (experimental): Uses a structured class definition system similar to tailwind-merge
-
-You can enable the experimental comprehensive check by setting `useComprehensiveCheck: true` in the tailwind-detector options.
+1. **Pattern-based detection**: Uses comprehensive regex patterns to match Tailwind utilities
+2. **Definition-based detection**: Uses a structured class definition system similar to tailwind-merge for accurate validation
 
 ## 🎨 Tailwind CSS Support
 
@@ -253,7 +252,7 @@ When Tailwind is detected and `ignoreTailwind` is `true`, the plugin will ignore
 
 ## Test Coverage
 
-- **146 tests** across 7 test suites
+- **203 tests** across 11 test suites
 - **100% feature coverage** including:
   - Tailwind CSS v3 & v4 patterns
   - Dynamic class generation
@@ -263,12 +262,26 @@ When Tailwind is detected and `ignoreTailwind` is `true`, the plugin will ignore
 
 See [Test Coverage Report](./test-summary.md) for details.
 
-## Contributing
+## 🐛 Debug Mode
 
-Contributions are welcome! Please read the documentation and ensure all tests pass:
+To enable debug output for troubleshooting, set the `DEBUG` environment variable:
 
 ```bash
-npm test  # Run all 146 tests
+DEBUG=1 npx eslint src/
+```
+
+This will output additional information about:
+- CSS file parsing
+- Tailwind detection
+- Class extraction
+- Cache operations
+
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+```bash
+npm test  # Run all 203 tests
 npm run lint  # Check code style
 ```
 

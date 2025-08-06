@@ -81,7 +81,7 @@ element.classList.add("missing-class");
     "cssFiles": ["**/*.css", "**/*.scss", "**/*.less"],
     
     // Patterns to exclude from scanning
-    "excludePatterns": ["**/node_modules/**", "**/dist/**"],
+    "excludePatterns": ["**/node_modules/**"],
     
     // Ignore Tailwind CSS utility classes
     "ignoreTailwind": true,
@@ -96,7 +96,10 @@ element.classList.add("missing-class");
     "allowDynamicClasses": true,
     
     // Base directory for CSS file resolution
-    "baseDir": "src"
+    "baseDir": "src",
+    
+    // Enable debug output for troubleshooting
+    "debug": false
   }]
 }
 ```
@@ -173,6 +176,17 @@ element.classList.add("missing-class");
   ```json
   {
     "baseDir": "./src"
+  }
+  ```
+
+#### `debug`
+- **Type**: `boolean`
+- **Default**: `false`
+- **Description**: Enable debug output for troubleshooting. Outputs information about CSS parsing, Tailwind detection, and caching to stderr when the DEBUG environment variable is set.
+- **Example**:
+  ```json
+  {
+    "debug": true
   }
   ```
 

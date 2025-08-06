@@ -1,11 +1,13 @@
 {
   "name": "eslint-plugin-undefined-css-classes",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "ESLint plugin to detect undefined CSS classes in HTML/JSX",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
-    "lint": "eslint lib/**/*.js"
+    "lint": "eslint lib/**/*.js",
+    "prepare": "husky install",
+    "prepublishOnly": "npm test && npm run lint"
   },
   "keywords": [
     "eslint",
@@ -16,15 +18,36 @@
     "validation",
     "tailwind"
   ],
-  "author": "",
+  "author": "eslint-plugin-undefined-css-classes contributors",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/didgeoridoo/eslint-plugin-undefined-css-classes.git"
+  },
+  "bugs": {
+    "url": "https://github.com/didgeoridoo/eslint-plugin-undefined-css-classes/issues"
+  },
+  "homepage": "https://github.com/didgeoridoo/eslint-plugin-undefined-css-classes#readme",
+  "files": [
+    "lib/",
+    "README.md",
+    "LICENSE"
+  ],
   "peerDependencies": {
     "eslint": ">=7.0.0"
   },
   "devDependencies": {
     "eslint": "^9.32.0",
     "jest": "^30.0.5",
-    "@eslint/js": "^9.32.0"
+    "@eslint/js": "^9.32.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.0.0"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "jest --bail --findRelatedTests"
+    ]
   },
   "dependencies": {
     "postcss": "^8.4.31",

@@ -8,6 +8,7 @@
 const { ESLint } = require('eslint');
 const fs = require('fs');
 const path = require('path');
+const plugin = require('./lib/index.js');
 
 async function verify() {
   console.log('🔍 Verifying eslint-plugin-undefined-css-classes...\n');
@@ -42,14 +43,19 @@ async function verify() {
 
   // Configure ESLint
   const eslint = new ESLint({
-    useEslintrc: false,
-    baseConfig: {
-      parserOptions: {
+    overrideConfigFile: true,
+    overrideConfig: {
+      files: ['**/*.jsx', '**/*.js'],
+      languageOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
-        ecmaFeatures: { jsx: true }
+        parserOptions: {
+          ecmaFeatures: { jsx: true }
+        }
       },
-      plugins: ['undefined-css-classes'],
+      plugins: {
+        'undefined-css-classes': plugin
+      },
       rules: {
         'undefined-css-classes/no-undefined-css-classes': ['error', {
           cssFiles: ['*.css'],
@@ -119,14 +125,19 @@ async function verify() {
 
     // Test with strict mode (no Tailwind, no dynamic)
     const strictEslint = new ESLint({
-      useEslintrc: false,
-      baseConfig: {
-        parserOptions: {
+      overrideConfigFile: true,
+      overrideConfig: {
+        files: ['**/*.jsx', '**/*.js'],
+        languageOptions: {
           ecmaVersion: 2020,
           sourceType: 'module',
-          ecmaFeatures: { jsx: true }
+          parserOptions: {
+            ecmaFeatures: { jsx: true }
+          }
         },
-        plugins: ['undefined-css-classes'],
+        plugins: {
+          'undefined-css-classes': plugin
+        },
         rules: {
           'undefined-css-classes/no-undefined-css-classes': ['error', {
             cssFiles: ['*.css'],
@@ -161,7 +172,6 @@ async function verify() {
     console.log('\n📦 Testing predefined configs...\n');
     
     const configs = ['recommended', 'strict', 'with-tailwind'];
-    const plugin = require('./lib/index.js');
     
     configs.forEach(configName => {
       const config = plugin.configs[configName];

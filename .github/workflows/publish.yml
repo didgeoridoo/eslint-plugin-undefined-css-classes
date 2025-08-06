@@ -1,0 +1,72 @@
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 1.0.1)'
+        required: true
+      tag:
+        description: 'npm tag (latest, beta, next)'
+        required: false
+        default: 'latest'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        registry-url: 'https://registry.npmjs.org'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run tests
+      run: npm test
+    
+    - name: Run linter
+      run: npm run lint
+    
+    - name: Verify plugin
+      run: node verify-plugin.js
+    
+    - name: Set version (manual trigger)
+      if: github.event_name == 'workflow_dispatch'
+      run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
+    
+    - name: Publish to npm
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          npm publish --tag ${{ github.event.inputs.tag }}
+        else
+          npm publish
+        fi
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    
+    - name: Create GitHub Release (manual trigger)
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.event.inputs.version }}
+        release_name: Release v${{ github.event.inputs.version }}
+        body: |
+          Published to npm as version ${{ github.event.inputs.version }}
+          
+          Install with:
+          ```bash
+          npm install eslint-plugin-undefined-css-classes@${{ github.event.inputs.version }}
+          ```
+        draft: false
+        prerelease: ${{ github.event.inputs.tag != 'latest' }}

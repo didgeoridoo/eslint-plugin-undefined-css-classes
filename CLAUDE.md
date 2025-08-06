@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ### Testing
-- `npm test` - Run all tests (146 tests across 7 test suites)
+- `npm test` - Run all tests (203 tests across 11 test suites)
 - `npm test -- tests/lib/rules/no-undefined-css-classes.test.js` - Run specific test file
 - `npm test -- --watch` - Run tests in watch mode
 - `npm test -- --coverage` - Run tests with coverage report
@@ -60,6 +60,11 @@ The rule accepts these key options:
 - `allowDynamicClasses`: Allow template literal dynamics (default: `true`)
 - `ignoreClassPatterns`: Array of regex patterns to ignore
 
-### Known Issues
-- Test teardown may leave temporary directories (cosmetic issue, tests pass)
-- When modifying test fixtures, ensure proper cleanup in afterEach hooks
+### Recent Updates (v0.1.1)
+- **Tailwind CSS 4 @theme support**: Full parsing and utility generation from theme variables
+- **Enhanced security**: Path traversal protection and input validation
+- **Performance improvements**: LRU caching and optimized CSS parsing
+- **Comprehensive testing**: 203 tests covering all edge cases including Tailwind 4
+
+### Version
+Current version: 0.1.1 (beta - API may change)
