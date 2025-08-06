@@ -75,6 +75,52 @@ describe('TailwindDetector', () => {
       expect(detector.hasTailwindConfig()).toBe(true);
     });
 
+    test('detects Tailwind 4 with @import "tailwindcss"', () => {
+      fs.writeFileSync(path.join(testProjectDir, 'app.css'), `
+        @import "tailwindcss";
+        
+        .custom-class {
+          color: red;
+        }
+      `);
+      const detector = new TailwindDetector({ projectRoot: testProjectDir });
+      
+      expect(detector.hasTailwindConfig()).toBe(true);
+    });
+
+    test('detects Tailwind 4 with @theme directive', () => {
+      fs.writeFileSync(path.join(testProjectDir, 'styles.css'), `
+        @import 'tailwindcss';
+        
+        @theme {
+          --color-primary: #3b82f6;
+          --color-secondary: #8b5cf6;
+        }
+      `);
+      const detector = new TailwindDetector({ projectRoot: testProjectDir });
+      
+      expect(detector.hasTailwindConfig()).toBe(true);
+    });
+
+    test('detects Tailwind 4 with various import formats', () => {
+      fs.writeFileSync(path.join(testProjectDir, 'main.css'), `
+        @import tailwindcss;
+      `);
+      const detector = new TailwindDetector({ projectRoot: testProjectDir });
+      
+      expect(detector.hasTailwindConfig()).toBe(true);
+    });
+
+    test('detects Tailwind 4 theme utilities import', () => {
+      fs.writeFileSync(path.join(testProjectDir, 'app.css'), `
+        @import "tailwindcss/theme";
+        @import "tailwindcss/utilities";
+      `);
+      const detector = new TailwindDetector({ projectRoot: testProjectDir });
+      
+      expect(detector.hasTailwindConfig()).toBe(true);
+    });
+
     test('returns false when no tailwind config found', () => {
       const detector = new TailwindDetector({ projectRoot: testProjectDir });
       
@@ -122,6 +168,27 @@ describe('TailwindDetector', () => {
       expect(detector.isTailwindClass('-mt-4')).toBe(true);
       expect(detector.isTailwindClass('p-px')).toBe(true);
       expect(detector.isTailwindClass('m-auto')).toBe(true);
+    });
+
+    test('detects width and height utilities with size variants', () => {
+      expect(detector.isTailwindClass('w-full')).toBe(true);
+      expect(detector.isTailwindClass('h-screen')).toBe(true);
+      expect(detector.isTailwindClass('max-w-xs')).toBe(true);
+      expect(detector.isTailwindClass('max-w-sm')).toBe(true);
+      expect(detector.isTailwindClass('max-w-md')).toBe(true);
+      expect(detector.isTailwindClass('max-w-lg')).toBe(true);
+      expect(detector.isTailwindClass('max-w-xl')).toBe(true);
+      expect(detector.isTailwindClass('max-w-2xl')).toBe(true);
+      expect(detector.isTailwindClass('max-w-3xl')).toBe(true);
+      expect(detector.isTailwindClass('max-w-4xl')).toBe(true);
+      expect(detector.isTailwindClass('max-w-5xl')).toBe(true);
+      expect(detector.isTailwindClass('max-w-6xl')).toBe(true);
+      expect(detector.isTailwindClass('max-w-7xl')).toBe(true);
+      expect(detector.isTailwindClass('max-w-none')).toBe(true);
+      expect(detector.isTailwindClass('max-w-prose')).toBe(true);
+      expect(detector.isTailwindClass('max-w-screen-lg')).toBe(true);
+      expect(detector.isTailwindClass('min-w-full')).toBe(true);
+      expect(detector.isTailwindClass('min-h-screen')).toBe(true);
     });
 
     test('detects color utilities', () => {
@@ -174,6 +241,16 @@ describe('TailwindDetector', () => {
       expect(detector.isTailwindClass('justify-between')).toBe(true);
       expect(detector.isTailwindClass('content-center')).toBe(true);
       expect(detector.isTailwindClass('self-start')).toBe(true);
+    });
+
+    test('detects container and common utilities', () => {
+      expect(detector.isTailwindClass('container')).toBe(true);
+      expect(detector.isTailwindClass('text-center')).toBe(true);
+      expect(detector.isTailwindClass('text-left')).toBe(true);
+      expect(detector.isTailwindClass('text-right')).toBe(true);
+      expect(detector.isTailwindClass('font-sans')).toBe(true);
+      expect(detector.isTailwindClass('font-serif')).toBe(true);
+      expect(detector.isTailwindClass('font-mono')).toBe(true);
     });
 
     test('does not detect non-Tailwind classes', () => {
@@ -245,6 +322,35 @@ describe('TailwindDetector', () => {
         ignoreTailwind: true,
         requireTailwindConfig: false 
       })).toBe(true);
+    });
+
+    test('ignores custom Tailwind color utilities', () => {
+      fs.writeFileSync(path.join(testProjectDir, 'tailwind.config.js'), 'module.exports = {}');
+      const detector = new TailwindDetector({ projectRoot: testProjectDir });
+      
+      // Custom color utilities that would be defined in @theme
+      expect(detector.shouldIgnoreClass('text-primary', { ignoreTailwind: true })).toBe(true);
+      expect(detector.shouldIgnoreClass('bg-surface', { ignoreTailwind: true })).toBe(true);
+      expect(detector.shouldIgnoreClass('text-surface-tertiary', { ignoreTailwind: true })).toBe(true);
+      expect(detector.shouldIgnoreClass('bg-brand-500', { ignoreTailwind: true })).toBe(true);
+      expect(detector.shouldIgnoreClass('border-inverse', { ignoreTailwind: true })).toBe(true);
+      expect(detector.shouldIgnoreClass('text-inverse', { ignoreTailwind: true })).toBe(true);
+    });
+
+    test('ignores Tailwind 4 patterns with @theme directive', () => {
+      // Simulate Tailwind 4 detection
+      fs.writeFileSync(path.join(testProjectDir, 'app.css'), `
+        @import "tailwindcss";
+        @theme {
+          --color-primary: #3b82f6;
+        }
+      `);
+      const detector = new TailwindDetector({ projectRoot: testProjectDir });
+      
+      expect(detector.shouldIgnoreClass('text-primary', { ignoreTailwind: true })).toBe(true);
+      expect(detector.shouldIgnoreClass('bg-primary', { ignoreTailwind: true })).toBe(true);
+      expect(detector.shouldIgnoreClass('container', { ignoreTailwind: true })).toBe(true);
+      expect(detector.shouldIgnoreClass('text-center', { ignoreTailwind: true })).toBe(true);
     });
   });
 });

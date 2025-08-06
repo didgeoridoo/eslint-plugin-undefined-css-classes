@@ -13,6 +13,7 @@ An ESLint plugin to detect undefined CSS classes in your HTML and JSX code. Auto
 
 - Detects CSS classes used in HTML/JSX/Svelte that are not defined in any CSS file
 - Automatically detects and ignores Tailwind CSS classes (both static and dynamic)
+- **Full Tailwind CSS 4 support** - detects `@import "tailwindcss"` and `@theme` directives
 - Supports JSX className and class attributes
 - **Supports Svelte components** (requires eslint-plugin-svelte)
 - Supports template literals and dynamic class names
@@ -135,6 +136,25 @@ The plugin provides several predefined configurations:
 element.classList.add("undefined-class");
 // Error: CSS class 'undefined-class' is not defined in any CSS file
 ```
+
+## 🎨 Tailwind CSS Detection
+
+The plugin automatically detects Tailwind CSS in your project through multiple methods:
+
+### Tailwind CSS 3 and earlier
+- Presence of `tailwind.config.js`, `tailwind.config.ts`, or other config files
+- `tailwindcss` in package.json dependencies
+- `tailwindcss` in PostCSS configuration
+
+### Tailwind CSS 4
+- `@import "tailwindcss"` in CSS files
+- `@theme` directive in CSS files
+- `@import "tailwindcss/theme"` or `@import "tailwindcss/utilities"`
+
+### Custom Theme Colors
+The plugin intelligently ignores custom utility classes that would be generated from `@theme` definitions:
+- `text-primary`, `bg-surface`, `border-inverse` etc.
+- Custom color scales like `text-brand-500`, `bg-surface-tertiary`
 
 ## 🧩 Svelte Support
 
