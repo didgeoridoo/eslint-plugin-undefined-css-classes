@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2025-01-06
+
+### Added
+- Support for parsing Svelte component `<style>` blocks - classes defined in component styles are now recognized
+- Support for Tailwind CSS opacity modifiers (e.g., `bg-primary/50`, `from-surface-tertiary/50`)
+- Recognition of special Tailwind utilities: `group`, `peer`, `container`, `prose`, and pseudo-element utilities
+- Improved `@theme` variable parsing to handle single-word color names like `canvas`, `surface`, etc.
+
+### Fixed  
+- Fixed false positives for CSS classes defined in Svelte component `<style>` blocks
+- Fixed recognition of Tailwind CSS `group` utility class
+- Fixed parsing of Tailwind classes with opacity modifiers (e.g., `/50`, `/75`, `/100`)
+- Fixed recognition of single-word theme variable names (not just prefixed ones)
+
 ## [0.1.1] - 2025-01-06
 
 ### Added
@@ -54,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - LRU caching for performance optimization
 - Detailed documentation and examples
 
-[Unreleased]: https://github.com/didgeoridoo/eslint-plugin-undefined-css-classes/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/didgeoridoo/eslint-plugin-undefined-css-classes/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/didgeoridoo/eslint-plugin-undefined-css-classes/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/didgeoridoo/eslint-plugin-undefined-css-classes/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/didgeoridoo/eslint-plugin-undefined-css-classes/releases/tag/v0.1.0

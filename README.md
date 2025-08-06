@@ -252,7 +252,7 @@ When Tailwind is detected and `ignoreTailwind` is `true`, the plugin will ignore
 
 ## Test Coverage
 
-- **203 tests** across 11 test suites
+- **223 tests** across 13 test suites
 - **100% feature coverage** including:
   - Tailwind CSS v3 & v4 patterns
   - Dynamic class generation
@@ -281,7 +281,7 @@ This will output additional information about:
 Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ```bash
-npm test  # Run all 203 tests
+npm test  # Run all 223 tests
 npm run lint  # Check code style
 ```
 
