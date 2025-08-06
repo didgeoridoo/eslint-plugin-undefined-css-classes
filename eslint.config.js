@@ -1,5 +1,12 @@
 const js = require('@eslint/js');
 
+// Polyfill for structuredClone for Node.js < 17
+if (typeof globalThis.structuredClone === 'undefined') {
+  globalThis.structuredClone = function(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  };
+}
+
 module.exports = [
   js.configs.recommended,
   {
