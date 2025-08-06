@@ -18,7 +18,7 @@ describe('TailwindDetector', () => {
       files.forEach(file => {
         fs.unlinkSync(path.join(testProjectDir, file));
       });
-      fs.rmdirSync(testProjectDir);
+      fs.rmSync(testProjectDir, { recursive: true, force: true });
     }
   });
 

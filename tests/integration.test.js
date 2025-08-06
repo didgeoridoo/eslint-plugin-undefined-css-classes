@@ -30,15 +30,21 @@ describe('Integration Tests', () => {
     `);
 
     // Initialize ESLint
+    const plugin = require('../lib/index.js');
     eslint = new ESLint({
-      useEslintrc: false,
-      baseConfig: {
-        parserOptions: {
+      overrideConfigFile: true,
+      overrideConfig: [{
+        files: ['**/*.js', '**/*.jsx'],
+        languageOptions: {
           ecmaVersion: 2020,
           sourceType: 'module',
-          ecmaFeatures: { jsx: true }
+          parserOptions: {
+            ecmaFeatures: { jsx: true }
+          }
         },
-        plugins: ['undefined-css-classes'],
+        plugins: {
+          'undefined-css-classes': plugin
+        },
         rules: {
           'undefined-css-classes/no-undefined-css-classes': ['error', {
             cssFiles: ['*.css'],
@@ -47,7 +53,7 @@ describe('Integration Tests', () => {
             requireTailwindConfig: true
           }]
         }
-      }
+      }]
     });
   });
 
@@ -57,7 +63,7 @@ describe('Integration Tests', () => {
     files.forEach(file => {
       fs.unlinkSync(path.join(fixturesDir, file));
     });
-    fs.rmdirSync(fixturesDir);
+    fs.rmSync(fixturesDir, { recursive: true, force: true });
   });
 
   test('detects undefined classes in JSX', async () => {
@@ -131,15 +137,21 @@ describe('Integration Tests', () => {
     const filePath = path.join(fixturesDir, 'dynamic-test.jsx');
     fs.writeFileSync(filePath, code);
 
+    const plugin = require('../lib/index.js');
     const eslintWithDynamic = new ESLint({
-      useEslintrc: false,
-      baseConfig: {
-        parserOptions: {
+      overrideConfigFile: true,
+      overrideConfig: [{
+        files: ['**/*.js', '**/*.jsx'],
+        languageOptions: {
           ecmaVersion: 2020,
           sourceType: 'module',
-          ecmaFeatures: { jsx: true }
+          parserOptions: {
+            ecmaFeatures: { jsx: true }
+          }
         },
-        plugins: ['undefined-css-classes'],
+        plugins: {
+          'undefined-css-classes': plugin
+        },
         rules: {
           'undefined-css-classes/no-undefined-css-classes': ['error', {
             cssFiles: ['*.css'],
@@ -147,7 +159,7 @@ describe('Integration Tests', () => {
             allowDynamicClasses: true
           }]
         }
-      }
+      }]
     });
 
     const results = await eslintWithDynamic.lintFiles([filePath]);
@@ -209,15 +221,21 @@ describe('Integration Tests', () => {
     const filePath = path.join(fixturesDir, 'ignore-test.jsx');
     fs.writeFileSync(filePath, code);
 
+    const plugin = require('../lib/index.js');
     const eslintWithIgnore = new ESLint({
-      useEslintrc: false,
-      baseConfig: {
-        parserOptions: {
+      overrideConfigFile: true,
+      overrideConfig: [{
+        files: ['**/*.js', '**/*.jsx'],
+        languageOptions: {
           ecmaVersion: 2020,
           sourceType: 'module',
-          ecmaFeatures: { jsx: true }
+          parserOptions: {
+            ecmaFeatures: { jsx: true }
+          }
         },
-        plugins: ['undefined-css-classes'],
+        plugins: {
+          'undefined-css-classes': plugin
+        },
         rules: {
           'undefined-css-classes/no-undefined-css-classes': ['error', {
             cssFiles: ['*.css'],
@@ -225,7 +243,7 @@ describe('Integration Tests', () => {
             ignoreClassPatterns: ['^custom-', '^legacy-']
           }]
         }
-      }
+      }]
     });
 
     const results = await eslintWithIgnore.lintFiles([filePath]);

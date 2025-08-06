@@ -18,7 +18,7 @@ describe('Error Handling and Edge Cases', () => {
     if (fs.existsSync(testDir)) {
       const files = fs.readdirSync(testDir);
       files.forEach(file => fs.unlinkSync(path.join(testDir, file)));
-      fs.rmdirSync(testDir);
+      fs.rmSync(testDir, { recursive: true, force: true });
     }
   });
 
@@ -385,10 +385,12 @@ describe('Error Handling and Edge Cases', () => {
 
   describe('ESLint Rule Edge Cases', () => {
     const ruleTester = new RuleTester({
-      parserOptions: {
+      languageOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
-        ecmaFeatures: { jsx: true }
+        parserOptions: {
+          ecmaFeatures: { jsx: true }
+        }
       }
     });
 

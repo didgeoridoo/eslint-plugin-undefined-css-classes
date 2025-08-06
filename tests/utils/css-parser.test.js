@@ -97,7 +97,7 @@ describe('CSSClassExtractor', () => {
     files.forEach(file => {
       fs.unlinkSync(path.join(fixturesDir, file));
     });
-    fs.rmdirSync(fixturesDir);
+    fs.rmSync(fixturesDir, { recursive: true, force: true });
   });
 
   test('extracts classes from basic CSS', () => {

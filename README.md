@@ -11,9 +11,10 @@ An ESLint plugin to detect undefined CSS classes in your HTML and JSX code. Auto
 
 ## ✨ Features
 
-- Detects CSS classes used in HTML/JSX that are not defined in any CSS file
+- Detects CSS classes used in HTML/JSX/Svelte that are not defined in any CSS file
 - Automatically detects and ignores Tailwind CSS classes (both static and dynamic)
 - Supports JSX className and class attributes
+- **Supports Svelte components** (requires eslint-plugin-svelte)
 - Supports template literals and dynamic class names
 - Works with CSS-in-JS solutions like clsx, classNames, and cn
 - Configurable patterns for ignoring specific classes
@@ -133,6 +134,58 @@ The plugin provides several predefined configurations:
 // Undefined class in classList.add
 element.classList.add("undefined-class");
 // Error: CSS class 'undefined-class' is not defined in any CSS file
+```
+
+## 🧩 Svelte Support
+
+To use this plugin with Svelte components, you need to install and configure `eslint-plugin-svelte`:
+
+### Installation
+
+```bash
+npm install --save-dev eslint-plugin-svelte svelte-eslint-parser
+```
+
+### Configuration
+
+```javascript
+// eslint.config.js
+import svelte from 'eslint-plugin-svelte';
+import undefinedCssClasses from 'eslint-plugin-undefined-css-classes';
+
+export default [
+  ...svelte.configs['flat/recommended'],
+  {
+    files: ['**/*.svelte'],
+    plugins: {
+      'undefined-css-classes': undefinedCssClasses
+    },
+    rules: {
+      'undefined-css-classes/no-undefined-css-classes': ['error', {
+        cssFiles: ['src/**/*.css'],
+        ignoreTailwind: true
+      }]
+    }
+  }
+];
+```
+
+### Example Svelte Component
+
+```svelte
+<script>
+  export let title = 'Hello';
+</script>
+
+<!-- Valid: defined classes -->
+<div class="container defined-class">
+  <h1 class="font-display">{title}</h1>
+</div>
+
+<!-- Invalid: undefined classes -->
+<div class="fake-undefined-class">
+  <!-- Error: CSS class 'fake-undefined-class' is not defined -->
+</div>
 ```
 
 ## 🎨 Tailwind CSS Support
