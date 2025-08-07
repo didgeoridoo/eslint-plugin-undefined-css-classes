@@ -1,0 +1,178 @@
+name: Auto Publish to npm
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Triggers on version tags like v1.0.0, v2.1.3, etc.
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+    branches:
+      - main
+      - master
+
+jobs:
+  check-version:
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      should_publish: ${{ steps.check.outputs.should_publish }}
+      version: ${{ steps.check.outputs.version }}
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Check if version changed
+      id: check
+      run: |
+        # Get the current version from package.json
+        CURRENT_VERSION=$(node -p "require('./package.json').version")
+        echo "Current version: $CURRENT_VERSION"
+        
+        # Check if this version is already published on npm
+        NPM_VERSION=$(npm view eslint-plugin-undefined-css-classes@$CURRENT_VERSION version 2>/dev/null || echo "")
+        
+        if [ -z "$NPM_VERSION" ]; then
+          echo "Version $CURRENT_VERSION is not published yet"
+          echo "should_publish=true" >> $GITHUB_OUTPUT
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+        else
+          echo "Version $CURRENT_VERSION is already published"
+          echo "should_publish=false" >> $GITHUB_OUTPUT
+        fi
+
+  publish-from-ci:
+    needs: check-version
+    if: needs.check-version.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        registry-url: 'https://registry.npmjs.org'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run tests
+      run: npm test
+    
+    - name: Run linter
+      run: npm run lint
+    
+    - name: Verify plugin
+      run: node verify-plugin.js
+    
+    - name: Publish to npm
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ needs.check-version.outputs.version }}
+        release_name: Release v${{ needs.check-version.outputs.version }}
+        body: |
+          ## 🚀 Auto-published to npm
+          
+          Version ${{ needs.check-version.outputs.version }} has been automatically published to npm.
+          
+          ### Installation
+          ```bash
+          npm install eslint-plugin-undefined-css-classes@${{ needs.check-version.outputs.version }}
+          ```
+          
+          ### What's Changed
+          See the [commit history](https://github.com/${{ github.repository }}/commits/v${{ needs.check-version.outputs.version }}) for details.
+        draft: false
+        prerelease: false
+
+  publish-from-tag:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        registry-url: 'https://registry.npmjs.org'
+        cache: 'npm'
+    
+    - name: Get version from tag
+      id: tag_version
+      run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run tests
+      run: npm test
+    
+    - name: Run linter
+      run: npm run lint
+    
+    - name: Verify plugin
+      run: node verify-plugin.js
+    
+    - name: Check package.json version matches tag
+      run: |
+        PACKAGE_VERSION=$(node -p "require('./package.json').version")
+        TAG_VERSION="${{ steps.tag_version.outputs.version }}"
+        if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+          echo "Error: package.json version ($PACKAGE_VERSION) doesn't match tag version ($TAG_VERSION)"
+          echo "Please ensure package.json is updated before tagging"
+          exit 1
+        fi
+    
+    - name: Determine npm tag
+      id: npm_tag
+      run: |
+        VERSION="${{ steps.tag_version.outputs.version }}"
+        if [[ "$VERSION" == *"-beta"* ]]; then
+          echo "tag=beta" >> $GITHUB_OUTPUT
+        elif [[ "$VERSION" == *"-alpha"* ]]; then
+          echo "tag=alpha" >> $GITHUB_OUTPUT
+        elif [[ "$VERSION" == *"-rc"* ]]; then
+          echo "tag=next" >> $GITHUB_OUTPUT
+        else
+          echo "tag=latest" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Publish to npm
+      run: npm publish --tag ${{ steps.npm_tag.outputs.tag }}
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.tag_version.outputs.version }}
+        release_name: Release v${{ steps.tag_version.outputs.version }}
+        body: |
+          ## 📦 Published to npm
+          
+          Version ${{ steps.tag_version.outputs.version }} has been published to npm with tag: `${{ steps.npm_tag.outputs.tag }}`
+          
+          ### Installation
+          ```bash
+          npm install eslint-plugin-undefined-css-classes@${{ steps.tag_version.outputs.version }}
+          ```
+          
+          ### What's Changed
+          See the [commit history](https://github.com/${{ github.repository }}/commits/v${{ steps.tag_version.outputs.version }}) for details.
+        draft: false
+        prerelease: ${{ steps.npm_tag.outputs.tag != 'latest' }}

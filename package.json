@@ -7,7 +7,15 @@
     "test": "jest",
     "lint": "eslint lib/**/*.js",
     "prepare": "husky install",
-    "prepublishOnly": "npm test && npm run lint"
+    "prepublishOnly": "npm test && npm run lint",
+    "version:patch": "npm version patch && git push && git push --tags",
+    "version:minor": "npm version minor && git push && git push --tags",
+    "version:major": "npm version major && git push && git push --tags",
+    "version:prerelease": "npm version prerelease --preid=beta && git push && git push --tags",
+    "release": "npm run version:patch",
+    "release:minor": "npm run version:minor",
+    "release:major": "npm run version:major",
+    "release:beta": "npm run version:prerelease"
   },
   "keywords": [
     "eslint",

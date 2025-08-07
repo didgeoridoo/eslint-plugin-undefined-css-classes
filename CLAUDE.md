@@ -18,6 +18,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm install` - Install dependencies
 - No build step required (plain JavaScript)
 
+### Publishing & Releases
+- `npm run release` - Patch release (bug fixes)
+- `npm run release:minor` - Minor release (new features)
+- `npm run release:major` - Major release (breaking changes)
+- `npm run release:beta` - Beta pre-release for testing
+
+These commands automatically:
+1. Bump version in package.json
+2. Create git commit and tag
+3. Push to GitHub
+4. Trigger CI/CD pipeline
+5. Auto-publish to npm if tests pass
+
+**Note:** Requires `NPM_TOKEN` in GitHub secrets for automated publishing. See PUBLISHING.md for setup details.
+
 ## Architecture
 
 ### Core Components
