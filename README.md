@@ -246,21 +246,22 @@ When Tailwind is detected and `ignoreTailwind` is `true`, the plugin will ignore
 ## 🔧 Compatibility
 
 - ESLint: >=7.0.0
-- Node.js: >=14.0.0
-- Supports JSX/TSX files
-- Works with Vue Single File Components (SFC)
+- Node.js: >=18.18.0
+- Supports JSX/TSX files (React, Next.js, etc.)
+- Supports Svelte components (with eslint-plugin-svelte)
+- Vue support requires vue-eslint-parser (see docs)
 
 ## Test Coverage
 
 - **223 tests** across 13 test suites
-- **100% feature coverage** including:
+- Comprehensive coverage including:
   - Tailwind CSS v3 & v4 patterns
   - Dynamic class generation
   - CSS-in-JS utilities (clsx, classNames, cn)
-  - Error handling and edge cases
-  - Performance optimization
-
-See [Test Coverage Report](./test-summary.md) for details.
+  - Unicode and emoji support in class names
+  - Malformed CSS handling
+  - Long class names (1000+ characters)
+  - Nested conditionals and expressions
 
 ## 🐛 Debug Mode
 
