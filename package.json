@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-undefined-css-classes",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "ESLint plugin to detect undefined CSS classes in HTML/JSX",
   "main": "lib/index.js",
   "scripts": {
